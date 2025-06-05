@@ -11,7 +11,6 @@ let idAtual = 1;
 app.post("/items", (req, res) => {
   const { name, quantity, type } = req.body;
 
-  // validação dos campos obrigatórios
   if (
     !name || typeof name !== "string" ||
     !quantity || typeof quantity !== "number" || !Number.isInteger(quantity) ||
@@ -20,7 +19,6 @@ app.post("/items", (req, res) => {
     return res.status(422).send("Todos os campos são obrigatórios e devem ser válidos.");
   }
 
-  // impedir itens com o mesmo nome (case insensitive)
   const itemExiste = compras.find(item => item.name.toLowerCase() === name.toLowerCase());
   if (itemExiste) {
     return res.status(409).send("Item com esse nome já existe.");
@@ -48,6 +46,22 @@ app.get("/items", (req, res) => {
 
   // Se não enviou query 'type', retorna todos os itens
   res.send(compras);
+});
+
+app.get("/items/:id", (req, res) => {
+  const id = Number(req.params.id);
+
+  // validação: número inteiro positivo
+  if (!Number.isInteger(id) || id <= 0) {
+    return res.status(400).send("O ID deve ser um número inteiro positivo.");
+  }
+
+  const item = compras.find(item => item.id === id);
+  if (!item) {
+    return res.status(404).send("Item não encontrado.");
+  }
+
+  res.send(item);
 });
 
 app.listen(5000, () => {
