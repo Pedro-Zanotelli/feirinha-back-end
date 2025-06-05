@@ -5,7 +5,7 @@ const app = express();
 app.use(cors())
 app.use(express.json());
 
-const compras = []; // lista começa vazia
+const compras = [];
 let idAtual = 1;
 
 app.post("/items", (req, res) => {
@@ -39,19 +39,17 @@ app.get("/items", (req, res) => {
   const { type } = req.query;
 
   if (type) {
-    // Filtra os itens cujo type é exatamente igual ao query 'type' (case sensitive)
     const filtrados = compras.filter(item => item.type === type);
     return res.send(filtrados);
   }
 
-  // Se não enviou query 'type', retorna todos os itens
+
   res.send(compras);
 });
 
 app.get("/items/:id", (req, res) => {
   const id = Number(req.params.id);
 
-  // validação: número inteiro positivo
   if (!Number.isInteger(id) || id <= 0) {
     return res.status(400).send("O ID deve ser um número inteiro positivo.");
   }
